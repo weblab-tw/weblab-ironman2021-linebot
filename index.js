@@ -3,6 +3,7 @@ const Redis = require("ioredis");
 const cheerio = require("cheerio");
 const line = require("@line/bot-sdk");
 const { default: axios } = require("axios");
+const bodyParser = require("body-parser");
 const express = require("express");
 const path = require("path");
 const PORT = process.env.PORT || 5000;
@@ -17,6 +18,7 @@ const redisClient = new Redis(process.env.REDIS_URL, {
 });
 
 const app = express()
+  .use(bodyParser.json())
   .use(express.static(path.join(__dirname, "public")))
   .set("views", path.join(__dirname, "views"))
   .set("view engine", "ejs");
@@ -44,6 +46,7 @@ app
     try {
       for (let index = 0; index < req.body.events.length; index++) {
         const event = req.body.events[index];
+        console.log({ event });
         if (
           event.type === "message" &&
           event.message.type === "text" &&
@@ -73,6 +76,7 @@ app
       }
       return res;
     } catch (error) {
+      console.error(error);
       return res.send({ error });
     }
   })
@@ -111,7 +115,7 @@ const fetchTeamMembers = async (teamId) => {
 };
 
 const fetchTeamArticles = async (teamId, force = false, page = 1) => {
-  console.log({ force, page });
+  console.log({ teamId, force, page });
   const response = await axios.get(
     `https://ithelp.ithome.com.tw/2021ironman/signup/team/${teamId}?page=${page}`
   );
