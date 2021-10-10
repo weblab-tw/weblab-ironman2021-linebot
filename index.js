@@ -64,8 +64,16 @@ app
               type: 'text',
               text: `檢查 Team ${teamId} 文章中...`,
             })
-            const statusMessage = await getTeamStatusMessage(teamId)
-            await lineClient.replyMessage(event.replyToken, statusMessage)
+            try {
+              const statusMessage = await getTeamStatusMessage(teamId)
+              await lineClient.replyMessage(event.replyToken, statusMessage)
+            } catch (error) {
+              await lineClient.replyMessage(event.replyToken, {
+                type: 'text',
+                text: `Something went wrong...`,
+              })
+              console.error(error.response.data)
+            }
           }
         }
       }
