@@ -60,19 +60,15 @@ app
                 ? event.source.roomId
                 : event.source.userId
             await redisClient.sadd(`teams:${teamId}:receivers`, id)
-            await lineClient.replyMessage(event.replyToken, {
-              type: 'text',
-              text: `檢查 Team ${teamId} 文章中...`,
-            })
             try {
               const statusMessage = await getTeamStatusMessage(teamId)
               await lineClient.replyMessage(event.replyToken, statusMessage)
             } catch (error) {
+              console.error(error.response.data)
               await lineClient.replyMessage(event.replyToken, {
                 type: 'text',
                 text: `Something went wrong...`,
               })
-              console.error(error.response.data)
             }
           }
         }
