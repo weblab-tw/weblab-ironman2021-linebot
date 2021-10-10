@@ -84,7 +84,7 @@ app
 const fetchCurrentDay = async teamId => {
   const response = await axios.get(`https://ithelp.ithome.com.tw/2021ironman/signup/team/${teamId}`)
   const $ = cheerio.load(response.data)
-  const day = Number($('.team-dashboard__day').text().trim()) + 1
+  const day = $('.team-dashboard__day').text().trim()
   return day
 }
 
